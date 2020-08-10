@@ -1,11 +1,14 @@
 package com.pany.ui;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+
+import org.json.JSONException;
 
 import com.pany.ejb.BroadcastListener;
 import com.pany.ejb.Broadcaster;
@@ -73,7 +76,13 @@ public class MyUI extends UI implements BroadcastListener {
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        recordsView = new RecordsView();
+        try {
+			recordsView = new RecordsView();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
         recordsView.setSizeFull();
         setContent(recordsView);
         Broadcaster.register(this);
@@ -143,8 +152,11 @@ public class MyUI extends UI implements BroadcastListener {
 
     @Override
     public void update() {
-        recordsView.update();
-
+    	this.getUI().getSession().lock();
+    	try {
+            recordsView.update();
+    	} finally {
+    	   this.getUI().getSession().unlock();
+    	}
     }
-
 }

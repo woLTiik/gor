@@ -1,6 +1,8 @@
 package com.pany.ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONException;
 
@@ -12,7 +14,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -22,32 +25,51 @@ import com.vaadin.ui.VerticalLayout;
  *
  */
 public class RecordsView extends CustomComponent {
-    Grid<Record> recordsGrid;
-    TextField pageNumber;
-    TextField resultSize;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	Grid<Record> recordsGrid;
+    NativeSelect<Integer> pageNumber;
+    NativeSelect<Integer> resultSize;
+    Label totalResultsCount;
 
-    public RecordsView() {
+    public RecordsView() throws JSONException, IOException {
         super();
         VerticalLayout layout = new VerticalLayout();
         HorizontalLayout filtersLayout = new HorizontalLayout();
-        pageNumber = new TextField();
+        pageNumber = new NativeSelect<Integer>();
         pageNumber.setCaption("Číslo stránky");
-        resultSize = new TextField();
+        List<Integer> pageNumbers = new ArrayList<Integer>();
+        pageNumbers.add(1);
+        pageNumbers.add(2);
+        pageNumbers.add(3);
+        pageNumbers.add(4);
+        pageNumber.setItems(pageNumbers);
+
+        resultSize = new NativeSelect<Integer>();
+        List<Integer> pageSizes= new ArrayList<Integer>();
+        pageSizes.add(10);
+        pageSizes.add(20);
+        pageSizes.add(50);
+        pageSizes.add(100);
+        resultSize.setItems(pageSizes);
+
         resultSize.setCaption("Počet záznamů");
+        totalResultsCount = new Label();
+        totalResultsCount.setCaption("Celkový počet záznamů: ");
         filtersLayout.addComponent(pageNumber);
         filtersLayout.addComponent(resultSize);
+        filtersLayout.addComponent(totalResultsCount);
         Button findResults = new Button("Vyhledat");
         findResults.addClickListener(e -> {
             try {
-                findResults(Integer.parseInt(resultSize.getValue()), Integer.parseInt(pageNumber.getValue()));
+                findResults(resultSize.getValue(),pageNumber.getValue());
             } catch (NumberFormatException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             } catch (JSONException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
@@ -55,6 +77,7 @@ public class RecordsView extends CustomComponent {
         layout.addComponent(filtersLayout);
         recordsGrid = buildGrid();
         layout.addComponent(recordsGrid);
+        findResults(20, 1);
         setCompositionRoot(layout);
     }
 
@@ -81,6 +104,7 @@ public class RecordsView extends CustomComponent {
     }
 
     public void update() {
+    	totalResultsCount.setValue(RecordMonitor.getTotalRecords() + "");
         recordsGrid.setItems(RecordMonitor.getRecords());
     }
 
