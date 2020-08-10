@@ -1,0 +1,1 @@
+Technické kolo GORDIC
