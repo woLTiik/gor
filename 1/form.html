@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gordic 1.</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript" src="scripts.js"></script>
+</head>
+
+<body>
+  <main id="app-root">
+    <div id="theme" class="theme-dark">
+      <div class="app-container">
+        <button class="button" onclick="changeTheme();">Změnit motiv</button>
+        <table id="records">
+          <tr><th>Jméno</th><th>Email</th><th>Datum narození</th><th>Pohlaví</th><th>Vzdělání</th><th>Zájmy</th><tr>
+        </table>
+        <h2 class="title">Vytvoření záznamu</h2>
+        <div class="container">
+          <form name="addDetail" class="form-class" onsubmit="addRecord(this); return false" >
+            <div class="tooltip">
+              <span class="tooltiptext">Zadejte alespoň dvě slova oddělená mezerou</span>
+              <div class="col25"><label>Jméno a Příjmení:</label></div>
+              <div class="col75"><input id="name" name="name" type="text" required
+                  pattern="([a-zA-Z]+\s){1,}([a-zA-Z]+)"></div>
+            </div>
+            <div class="tooltip">
+              <span class="tooltiptext">Zadejte platnou e-mailovou adresu</span>
+              <div class="col25"><label>Email:</label></div>
+              <div class="col75"><input id="email" name="email" type="text" required
+                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"></div>
+            </div>
+            <div>
+              <div class="col25"><label>Datum narození:</label></div>
+              <div class="col75"><input type="date" id="birthday" name="birthday" required max="2020-10-25"></div>
+            </div>
+            <div>
+              <div class="col25"><label>Pohlaví:</label></div>
+              <div class="col75">
+                <div class=" switch-field">
+                  <input type="radio" id="Muž" name="gender" value="Muž" checked />
+                  <label for="Muž">Muž</label>
+                  <input type="radio" id="Žena" name="gender" value="Žena" />
+                  <label for="Žena">Žena</label></div>
+              </div>
+            </div>
+            <div>
+              <div class="col25"><label for="education">Vzdělání:</label></div>
+              <div class="col75">
+                <select id="education" name="education">
+                  <option value="default">Neznámé vzdělání</option>
+                </select></div>
+            </div>
+            <div>
+              <div class="col25"><label>Zájmy</label></div>
+              <div class="col75">
+                <div class="checkbox">
+                  <input type="checkbox" id="sports" name="sports" value="Sporty">
+                  <label for="sports">Sporty</label></div>
+                <div class="checkbox"> <input type="checkbox" id="music" name="music" value="Hudba">
+                  <label for="music"> Hudba</label></div>
+                <div class="checkbox"><input type="checkbox" id="other" name="other" value="Jiné"
+                    onchange="allowOther();">
+                  <label for="other">Jiné</label></div>
+                  <input id="otherInput" name="otherInput" type="text" disabled>
+              </div>
+            </div>
+        </div>
+        <div>
+          <input class="button" id="submit" type="submit" value="Vložit">
+        </div>
+        </form>
+        <script>
+          /*doplni udaje do zaznamu*/
+          var today = new Date().toISOString().split('T')[0];
+          document.getElementsByName("birthday")[0].setAttribute('max', today);
+          refreshEducationOptions();
+        </script>
+      </div>
+    </div>
+    </div>
+  </main>
+</body>
+
+</html>
